@@ -1,11 +1,15 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\MyController;
+use App\Http\Controllers\PostController;
+
+
+
 
 Route::get('/', function () {
     return view('welcome');
 });
-
 
 //basic
 Route::get('about', function () {
@@ -27,25 +31,24 @@ Route::get('buku', function () {
 
 Route::get('menu', function () {
     $data = [
-        ['barang'=>'bala bala','harga'=>1000,'qty'=>10],
-        ['barang'=>'gehu pedas','harga'=>2000,'qty'=>15],
-        ['barang'=>'cireng isi ayam','harga'=> 2500,'qty'=>5],
+        ['barang' => 'bala bala', 'harga' => 1000, 'qty' => 10],
+        ['barang' => 'gehu pedas', 'harga' => 2000, 'qty' => 15],
+        ['barang' => 'cireng isi ayam', 'harga' => 2500, 'qty' => 5],
     ];
     $resto = "resto MPL - makanan penuh lemak";
 
-
-    return view('menu', compact('data','resto'));
+    return view('menu', compact('data', 'resto'));
 
 });
 
 //route parameter
 Route::get('books/{judul}', function () {
-    return 'judul buku:' .$a;
+    return 'judul buku:' . $a;
 });
 
 //compact assosiatif
-Route::get('nilai/{title}/{category}', function($a, $b){
-    return view('nilai',['judul' =>$a, 'cat' =>$b]);
+Route::get('nilai/{title}/{category}', function ($a, $b) {
+    return view('nilai', ['judul' => $a, 'cat' => $b]);
 });
 
 //route optional parameter
@@ -54,18 +57,9 @@ Route::get('profile/{nama?}', function ($a = " guest") {
     return 'halo nama saya' . $a;
 });
 
-
-
-
 Route::get('order/{item}', function ($a = "nasi") {
-    return view('order',compact('a'));
+    return view('order', compact('a'));
 });
-
-
-
-
-
-
 
 //tugas
 Route::get('potokopi', function () {
@@ -80,22 +74,72 @@ Route::get('potokopi', function () {
 
 });
 
-
 Route::get('nilai/{nama}/{mapel}/{nilai}', function ($a, $b, $c) {
-    return view('nilai', ['nama'  => $a, 'mapel' => $b,'nilai'=>$c]);
+    return view('nilai', ['nama' => $a, 'mapel' => $b, 'nilai' => $c]);
 });
-
-
 
 Route::get('grading/{nama}/{nilai}', function ($a = "guest", $b = 0) {
     return view('grading', ['nama' => $a, 'nilai' => $b]);
 });
 
-
 Route::get('kelas/{nama}/{nilai}', function ($a = "guest", $b = 0) {
     return view('kelas', ['nama' => $a, 'nilai' => $b]);
 });
 
+//test model
+Route::get('test-model', function () {
+    //menampilkan semua data dari model post
+    $data = App\Models\post::all();
+
+    return $data;
+});
+
+Route::get('create-data', function () {
+    //membuat data baru melalui model
+    $data = App\Models\post::create([
+        'title'   => 'tukang rujak',
+        'content' => 'lorem ipsum',
+    ]);
+    return $data;
+});
+
+Route::get('show-data/{id}', function ($id) {
+    //menampilkan data berdasarkan parameter 'id'
+    $data = App\Models\post::find($id);
+    return $data;
+});
+
+Route::get('edit-data/{id}', function ($id) {
+    //mengupdate data berdaar kan id
+    $data        = App\Models\post::find($id);
+    $data->title = "membangun projek dengan laravel";
+    $data->save();
+    return $data;
+});
+
+Route::get('delete-data/{id}', function ($id) {
+    //menghapus data berdasarkan patameter id
+    $data = App\Models\post::fint($id);
+    $data->delete();
+    // di kembalikan ke halaman test model
+    return redirect('test-model');
+});
+
+Route::get('search/{cari}', function ($query) {
+    // mencari data berdasarkan titlr yang mirip seperti (like) .....
+    $data = App\Models\Post::where('title', 'like', '%' . $query . '%')->get();
+    return $data;
+});
 
 
+//pemangilan url menggunakan controller
 
+Route::get('greetings',[MyController::class, 'hello']);
+Route::get('student',[MyController::class, 'siswa']);
+
+
+//post
+Route::get('post', [PostController::class, 'index']);
+Auth::routes();
+
+Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');

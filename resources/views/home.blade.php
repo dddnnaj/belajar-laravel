@@ -14,7 +14,7 @@
                         </div>
                     @endif
 
-                    selamat datang di web app (assalam digital libary )
+                    {{ __('You are logged in!') }}
                 </div>
             </div>
         </div>
