@@ -47,9 +47,9 @@ Route::get('books/{judul}', function () {
 });
 
 //compact assosiatif
-Route::get('nilai/{title}/{category}', function ($a, $b) {
-    return view('nilai', ['judul' => $a, 'cat' => $b]);
-});
+// Route::get('nilai/{title}/{category}', function ($a, $b) {
+//     return view('nilai', ['judul' => $a, 'cat' => $b]);
+// });
 
 //route optional parameter
 //di tandai dengan?
@@ -138,8 +138,21 @@ Route::get('greetings',[MyController::class, 'hello']);
 Route::get('student',[MyController::class, 'siswa']);
 
 
-//post
-Route::get('post', [PostController::class, 'index']);
+
+
+
 Auth::routes();
 
 Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+
+//post
+Route::get('post', [PostController::class, 'index'])->name('post.index');
+//tambah data post
+Route::get('post/create', [PostController::class, 'create'])->name('post.create');
+Route::post('post', [PostController::class, 'store'])->name('post.store');
+//edit data post
+Route::get('post/{id}/edit', [PostController::class,'edit'])->name('post.edit');
+Route::put('post/{id}', [PostController::class, 'update'])->name('post.update');
+
+//hapus data 
+Route::delete('post/{id}', [PostController::class, 'destroy'])->name('post.delete');
