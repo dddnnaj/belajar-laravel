@@ -4,6 +4,19 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\MyController;
 use App\Http\Controllers\PostController;
 
+// routes/web.php
+use App\Http\Controllers\RelasiController;
+
+// routes/web.php
+use App\Models\Mahasiswa;
+
+// routes/web.php
+use App\Models\Hobi;
+
+
+
+
+
 
 
 
@@ -154,5 +167,58 @@ Route::post('post', [PostController::class, 'store'])->name('post.store');
 Route::get('post/{id}/edit', [PostController::class,'edit'])->name('post.edit');
 Route::put('post/{id}', [PostController::class, 'update'])->name('post.update');
 
+// show data
+Route::get('post/{id}', [PostController::class, 'show'])->name('post.show');
+
+
 //hapus data 
 Route::delete('post/{id}', [PostController::class, 'destroy'])->name('post.delete');
+
+
+// produk
+Route::resource('produk', App\Http\Controllers\ProdukController::class)->middleware('auth');
+
+
+use App\Http\Controllers\BiodataController;Route::resource('biodata', BiodataController::class);
+
+Route::get('/one-to-one', [RelasiController::class, 'oneToOne']);
+
+
+// routes/web.php
+use App\Models\Wali;
+
+Route::get('/wali-ke-mahasiswa', function () {
+    $wali = Wali::with('mahasiswa')->first();
+    return "{$wali->nama} adalah wali dari {$wali->mahasiswa->nama}";
+});
+
+
+Route::get('/mahasiswa-ke-dosen', function () {
+    $mhs = Mahasiswa::where('nim', '123456')->first();
+    return "{$mhs->nama} dibimbing oleh {$mhs->dosen->nama}";
+});
+
+Route::get('/one-to-many', [RelasiController::class, 'oneToMany']);
+
+
+Route::get('/many-to-many', [RelasiController::class, 'manyToMany']);
+
+
+
+Route::get('/hobi/bola', function () {
+    $hobi = Hobi::where('nama_hobi', 'Bermain Bola')->first();
+    foreach ($hobi->mahasiswas as $mhs) {
+        echo $mhs->nama . '<br>';
+    }
+});
+
+
+
+
+Route::get('eloquent', [RelasiController::class, 'eloquent']);
+
+Route::resource('dosen', App\Http\Controllers\DosenController::class)->middleware('auth');
+
+Route::resource('hobi', App\Http\Controllers\HobiController::class)->middleware('auth');
+
+
